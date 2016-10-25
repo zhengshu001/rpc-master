@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns="http://www.hualala.com/schema/core"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xs="http://www.w3.org/1999/XSL/Transform"
+            targetNamespace="http://www.hualala.com/schema/core"
+            elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xsd:import namespace="http://www.springframework.org/schema/beans" />
+
+	<xsd:element name="filter">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+                    <xsd:sequence>
+                        <xsd:element ref="validate" maxOccurs="1" minOccurs="0"/>
+                        <xsd:element ref="request" maxOccurs="1" minOccurs="0"/>
+                        <xsd:element ref="response" maxOccurs="1" minOccurs="0"/>
+                    </xsd:sequence>
+                    <xsd:attribute name="uri" type="xsd:string" />
+                    <xsd:attribute name="result" type="xsd:boolean" />
+					<xsd:attribute name="service" type="xsd:string" />
+                    <xsd:attribute name="request" type="xsd:string"/>
+                    <xsd:attribute name="response" type="xsd:string"/>
+                    <xsd:attribute name="method" type="xsd:string"/>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+    <xsd:element name="validate">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:sequence>
+                        <xsd:element ref="param" maxOccurs="unbounded" minOccurs="1"/>
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="param">
+        <xsd:complexType>
+            <xsd:attribute name="key" type="xsd:string" use="required"/>
+            <xsd:attribute name="rule">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="min"/>
+                        <xsd:enumeration value="max"/>
+                        <xsd:enumeration value="required"/>
+                        <xsd:enumeration value="int"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:attribute>
+            <xsd:attribute name="variable" type="xsd:string"/>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="request">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:sequence>
+                        <xsd:element ref="data" maxOccurs="unbounded" minOccurs="0"/>
+                    </xsd:sequence>
+                    <xsd:attribute name="include" type="xsd:boolean" />
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="response">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:sequence>
+                        <xsd:element ref="data" maxOccurs="unbounded" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="event">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:sequence>
+                        <xsd:element ref="request" maxOccurs="1" minOccurs="0"/>
+                    </xsd:sequence>
+                    <xsd:attribute name="service" type="xsd:string" />
+                    <xsd:attribute name="type">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:enumeration value="request"/>
+                                <xsd:enumeration value="response"/>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:attribute>
+                    <xsd:attribute name="result">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:enumeration value="success"/>
+                                <xsd:enumeration value="fail"/>
+                                <xsd:enumeration value="all"/>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:attribute>
+                    <xsd:attribute name="condition" type="xsd:string" />
+                    <xsd:attribute name="request" type="xsd:string"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="map">
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:sequence>
+                        <xsd:element ref="data" maxOccurs="unbounded" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="list">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="data" maxOccurs="unbounded" minOccurs="1"/>
+            </xsd:sequence>
+            <xsd:attribute name="count" type="xsd:int"/>
+            <xsd:attribute name="index" type="xsd:string"/>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="data">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="dict" maxOccurs="unbounded" minOccurs="0"/>
+                <xsd:element ref="map" maxOccurs="1" minOccurs="0"/>
+                <xsd:element ref="list" maxOccurs="1" minOccurs="0"/>
+            </xsd:sequence>
+            <xsd:attribute name="key" type="xsd:string" use="required"/>
+            <xsd:attribute name="value" type="xsd:string"/>
+            <xsd:attribute name="source" type="xsd:string"/>
+            <xsd:attribute name="expression" type="xsd:string"/>
+            <xsd:attribute name="extra" type="xsd:string"/>
+            <xsd:attribute name="delete" type="xsd:boolean"/>
+            <xsd:attribute name="type">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="int"/>
+                        <xsd:enumeration value="date"/>
+                        <xsd:enumeration value="decimal"/>
+                        <xsd:enumeration value="json"/>
+                        <xsd:enumeration value="uuid"/>
+                        <xsd:enumeration value="double"/>
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:attribute>
+            <xsd:attribute name="pattern" type="xsd:string"/>
+            <xsd:attribute name="source-pattern" type="xsd:string"/>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="dict">
+        <xsd:complexType>
+            <xsd:attribute name="key" type="xsd:string" use="required"/>
+            <xsd:attribute name="value" type="xsd:string" use="required"/>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
