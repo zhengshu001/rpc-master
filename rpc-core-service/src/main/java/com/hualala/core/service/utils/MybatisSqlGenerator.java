@@ -44,6 +44,13 @@ public class MybatisSqlGenerator {
         String tablePrefix = "tbl_" + packageName + "_";
         generatorMySql(database, tableName, tablePrefix, packagePrefix + packageName, outputParam);
     }
+
+    public void generatorMySql(String database, String tableName, String appName, String outputParam) {
+        String packageName = database.substring(database.indexOf("_") + 1);
+        String tablePrefix = "tbl_" + packageName + "_";
+        generatorMySql(database, tableName, tablePrefix, packagePrefix + appName, outputParam);
+    }
+
     /**
      * 生成SQL
      * @param database 数据库名
