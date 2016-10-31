@@ -27,19 +27,19 @@ public interface Example {
         private DetailData reqDetail;
         @Protocol(fieldType = FieldType.STRING, order = 5, description = "测试list")
         private List<String> listString;
-        @Protocol(fieldType = FieldType.INT32, order = 6, description = "测试list")
+        @Protocol(fieldType = FieldType.INT, order = 6, description = "测试list")
         private List<Integer> listInt;
         @Protocol(fieldType = FieldType.ENUM, order = 7)
         private BankCodeEnum bankCodeEnum;
-        @Protocol(fieldType = FieldType.INT64, order = 8)
+        @Protocol(fieldType = FieldType.LONG, order = 8)
         private long resLong;
-        @Protocol(fieldType = FieldType.INT32, order = 9)
+        @Protocol(fieldType = FieldType.INT, order = 9)
         private Integer resInt;
         @Protocol(fieldType = FieldType.FLOAT, order = 10)
         private Float resFloat;
         @Protocol(fieldType = FieldType.DOUBLE, order = 11)
         private Double resDouble;
-        @Protocol(fieldType = FieldType.INT64, order = 12)
+        @Protocol(fieldType = FieldType.LONG, order = 12)
         private List<Long> listLong;
         @Protocol(fieldType = FieldType.FLOAT, order = 13)
         private List<Float> listFloat;
@@ -84,7 +84,7 @@ public interface Example {
         private DetailData detail;
         @Protocol(fieldType = FieldType.STRING, order = 6)
         private List<String> listString;
-        @Protocol(fieldType = FieldType.INT32, order = 7)
+        @Protocol(fieldType = FieldType.INT, order = 7)
         private List<Integer> listInt;
     }
 
@@ -106,18 +106,18 @@ public interface Example {
     class HelloReqData {
         @Protocol(fieldType = FieldType.STRING, order = 1)
         String paramStr;
-        @Protocol(fieldType = FieldType.INT32, order = 2)
+        @Protocol(fieldType = FieldType.INT, order = 2)
         int paramInt;
-        @Protocol(fieldType = FieldType.INT64, order = 3)
+        @Protocol(fieldType = FieldType.LONG, order = 3)
         long paramLong;
     }
     @Data
     class HelloResData {
         @Protocol(fieldType = FieldType.STRING, order = 1)
         String paramStr;
-        @Protocol(fieldType = FieldType.INT32, order = 2)
+        @Protocol(fieldType = FieldType.INT, order = 2)
         int paramInt;
-        @Protocol(fieldType = FieldType.INT64, order = 3)
+        @Protocol(fieldType = FieldType.LONG, order = 3)
         long paramLong;
     }
 }

@@ -41,9 +41,10 @@ public class GrpcUtilsTest {
         hualalaReqData.setParamLong(1234567);
         hualalaReqData.setParamInt(123);
         ExampleData.HelloReqData reqData = hualalaReqData.build();
-        byte[] bytes = reqData.toByteArray();
-        CodedInputStream input = CodedInputStream.newInstance(bytes, 0, bytes.length);
-        Example.HelloReqData helloReqData = grpcToBean(input, Example.HelloReqData.class);
+//        byte[] bytes = reqData.toByteArray();
+//        CodedInputStream input = CodedInputStream.newInstance(bytes, 0, bytes.length);
+//        Example.HelloReqData helloReqData = grpcToBean(input, Example.HelloReqData.class);
+        Example.HelloReqData helloReqData = GrpcUtils.grpcMessageToDataBean(reqData, Example.HelloReqData.class);
         System.out.println(JSON.toJSONString(helloReqData));
     }
 
@@ -70,9 +71,10 @@ public class GrpcUtilsTest {
 //        byte[] bytes = reqData.toByteArray();
 //        ExampleData.ComplexReqData.parseFrom(bytes);
 //        CodedInputStream input = CodedInputStream.newInstance(bytes, 0, bytes.length);
-        byte[] bytes = reqData.toByteArray();
-        CodedInputStream input = CodedInputStream.newInstance(bytes, 0, bytes.length);
-        Example.ComplexReqData data = grpcToBean(input, Example.ComplexReqData.class); //GrpcUtils.decode(reqData, Example.ComplexReqData.class);
+//        byte[] bytes = reqData.toByteArray();
+//        CodedInputStream input = CodedInputStream.newInstance(bytes, 0, bytes.length);
+//        Example.ComplexReqData data = grpcToBean(input, Example.ComplexReqData.class); //GrpcUtils.decode(reqData, Example.ComplexReqData.class);
+        Example.ComplexReqData data = GrpcUtils.grpcMessageToDataBean(reqData, Example.ComplexReqData.class);
         System.out.println(JSON.toJSONString(data));
         Assert.assertEquals(1000.33d, data.getListDouble().get(2).doubleValue(), 0.001);
         Assert.assertEquals(22.22f, data.getListFloat().get(1), 0.001);
@@ -101,7 +103,7 @@ public class GrpcUtilsTest {
 //            return ReflectionUtils.getField(it.getField(), helloReqData) != null;
 //        };
        // int size = computeByteSize(fieldInfoList, helloReqData);
-        byte[] bytes = encode(helloReqData, Example.HelloReqData.class);
+//        byte[] bytes = encode(helloReqData, Example.HelloReqData.class);
 //        CodedOutputStream output = CodedOutputStream.newInstance(bytes);
 //        fieldInfoList.stream().forEach(fieldInfo -> {
 //            ReflectionUtils.makeAccessible(fieldInfo.getField());
@@ -111,7 +113,8 @@ public class GrpcUtilsTest {
 //                ReflectionUtils.invokeMethod(encodeMethod, output, new Object[]{fieldInfo.getOrder(), value});
 //            }
 //        });
-        ExampleData.HelloReqData rpcReqData = ExampleData.HelloReqData.parseFrom(bytes);
+//        ExampleData.HelloReqData rpcReqData = ExampleData.HelloReqData.parseFrom(bytes);
+        ExampleData.HelloReqData rpcReqData = GrpcUtils.dataBeanToGrpcMessage(helloReqData, ExampleData.HelloReqData.class);
         System.out.println(rpcReqData);
         Assert.assertEquals(123, rpcReqData.getParamInt());
         Assert.assertEquals("bbbbbb", rpcReqData.getParamStr());
@@ -188,7 +191,9 @@ public class GrpcUtilsTest {
         System.out.println(JSON.toJSONString(helloResData));
         byte[] bytes = encode(helloResData, Example.ComplexReqData.class);
 
-        ExampleData.ComplexReqData rpcReqData = ExampleData.ComplexReqData.parseFrom(bytes);
+        ExampleData.ComplexReqData rpcReqData = GrpcUtils.dataBeanToGrpcMessage(helloResData, ExampleData.ComplexReqData.class);
+
+        //ExampleData.ComplexReqData rpcReqData = ExampleData.ComplexReqData.parseFrom(bytes);
         System.out.println(rpcReqData);
 
     }
@@ -302,9 +307,9 @@ public class GrpcUtilsTest {
 
     private void writePrimitiveNoTag(FieldInfo fieldInfo, Object o, CodedOutputStream output) {
         try {
-            if (fieldInfo.getFieldType() == FieldType.INT32) {
+            if (fieldInfo.getFieldType() == FieldType.INT) {
                 output.writeInt32NoTag((int)o);
-            } else if (fieldInfo.getFieldType() == FieldType.INT64) {
+            } else if (fieldInfo.getFieldType() == FieldType.LONG) {
                 output.writeInt64NoTag((long)o);
             } else if (fieldInfo.getFieldType() == FieldType.FLOAT) {
                 output.writeFloatNoTag((float)o);
@@ -318,9 +323,9 @@ public class GrpcUtilsTest {
 
     private void writePrimitive(FieldInfo fieldInfo, Object o, CodedOutputStream output) {
         try {
-            if (fieldInfo.getFieldType() == FieldType.INT32) {
+            if (fieldInfo.getFieldType() == FieldType.INT) {
                 output.writeInt32(fieldInfo.getOrder(), (int) o);
-            } else if (fieldInfo.getFieldType() == FieldType.INT64) {
+            } else if (fieldInfo.getFieldType() == FieldType.LONG) {
                 output.writeInt64(fieldInfo.getOrder(), (long) o);
             } else if (fieldInfo.getFieldType() == FieldType.FLOAT) {
                 output.writeFloat(fieldInfo.getOrder(), (float) o);
@@ -334,9 +339,9 @@ public class GrpcUtilsTest {
 
 
     private int computePrimitiveSize(FieldInfo fieldInfo, Object o) {
-        if (fieldInfo.getFieldType() == FieldType.INT32) {
+        if (fieldInfo.getFieldType() == FieldType.INT) {
             return CodedOutputStream.computeInt32SizeNoTag((int) o);
-        } else if (fieldInfo.getFieldType() == FieldType.INT64) {
+        } else if (fieldInfo.getFieldType() == FieldType.LONG) {
             return CodedOutputStream.computeInt64SizeNoTag((long) o);
         } else if (fieldInfo.getFieldType() == FieldType.FLOAT) {
             return CodedOutputStream.computeFloatSizeNoTag((float)o);

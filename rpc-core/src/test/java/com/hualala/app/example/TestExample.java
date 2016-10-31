@@ -1,6 +1,6 @@
 package com.hualala.app.example;
 
-import com.hualala.core.rpc.GrpcProtoGenerator;
+import com.hualala.core.rpc.RpcProtoGenerator;
 import org.junit.Test;
 
 /**
@@ -10,6 +10,6 @@ public class TestExample {
 
     @Test
     public void generatorProto() {
-        GrpcProtoGenerator.generate(Example.class, "example");
+        RpcProtoGenerator.generate(Example.class, "example");
     }
 }
