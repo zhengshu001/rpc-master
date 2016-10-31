@@ -10,13 +10,7 @@ import java.util.stream.Collectors;
 public class ProtoFieldUtils {
 
     public static List<FieldInfo> getAllProtoField(Class<?> clazz) {
-        List<FieldInfo> fieldInfoList = Arrays.asList(clazz.getDeclaredFields()).stream().filter(field ->
-            field.getAnnotation(Protocol.class) != null
-        ).map(field -> {
-            Protocol proto = field.getAnnotation(Protocol.class);
-            return FieldInfo.valueOf(field, proto.fieldType(), proto.order(), proto.description());
-        }).collect(Collectors.toList());
-
+        List<FieldInfo> fieldInfoList = getProtoField(clazz);
         if (clazz.getSuperclass() != null && clazz.getSuperclass() != Object.class) {
             fieldInfoList.addAll(getAllProtoField(clazz.getSuperclass()));
         }

@@ -1,9 +1,10 @@
 package com.hualala.core.base;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baidu.bjf.remoting.protobuf.FieldType;
 import com.baidu.bjf.remoting.protobuf.annotation.Protobuf;
 import com.hualala.commons.mybatis.item.BaseItem;
+import com.hualala.core.rpc.FieldType;
+import com.hualala.core.rpc.Protocol;
 import org.springframework.util.ReflectionUtils;
 
 import java.util.Arrays;
@@ -14,7 +15,8 @@ public class ResultInfo extends BaseItem {
 
 	protected static String SUCCESS_CODE = "000";
 	protected static String SUCCESS_MESSAGE = "SUCCESS";
-	@Protobuf(fieldType = FieldType.OBJECT, order = 1, description = "响应公共字段")
+	@Protobuf(fieldType = com.baidu.bjf.remoting.protobuf.FieldType.OBJECT, order = 1, description = "响应公共字段")
+	@Protocol(fieldType = FieldType.OBJECT, order = 1, description = "响应公共字段")
 	private ResultHeader result;
 
 	private Object[] params;
@@ -137,13 +139,17 @@ public class ResultInfo extends BaseItem {
 
 	public static class ResultHeader {
 
-		@Protobuf(fieldType = FieldType.STRING, order = 1, required = true)
+		@Protobuf(fieldType = com.baidu.bjf.remoting.protobuf.FieldType.STRING, order = 1, required = true)
+		@Protocol(fieldType = FieldType.STRING, order = 1)
 		private String traceID;
-		@Protobuf(fieldType = FieldType.STRING, order = 2, required = true)
+		@Protocol(fieldType = FieldType.STRING, order = 2)
+		@Protobuf(fieldType = com.baidu.bjf.remoting.protobuf.FieldType.STRING, order = 2, required = true)
 		private String code;
-		@Protobuf(fieldType = FieldType.STRING, order = 3, required = true)
+		@Protocol(fieldType = FieldType.STRING, order = 3)
+		@Protobuf(fieldType = com.baidu.bjf.remoting.protobuf.FieldType.STRING, order = 3, required = true)
 		private String message;
-		@Protobuf(fieldType = FieldType.BOOL, order = 4, required = true)
+		@Protocol(fieldType = FieldType.BOOL, order = 4)
+		@Protobuf(fieldType = com.baidu.bjf.remoting.protobuf.FieldType.BOOL, order = 4, required = true)
 		private boolean success;
 
 	}

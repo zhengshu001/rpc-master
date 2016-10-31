@@ -49,7 +49,7 @@ public class FieldInfo {
     }
 
     public boolean isPrimitiveType() {
-        return fieldType == FieldType.INT32 || fieldType == FieldType.INT64 || fieldType == FieldType.FLOAT || fieldType == FieldType.DOUBLE;
+        return fieldType == FieldType.INT || fieldType == FieldType.LONG || fieldType == FieldType.FLOAT || fieldType == FieldType.DOUBLE;
     }
 
     public boolean isPrimitiveGenericType() {return this.primitiveGenericType;}
@@ -91,16 +91,7 @@ public class FieldInfo {
     }
 
     public int makeTag() {
-        //fieldNumber << 3 | wireType;
-        int i = this.order << 3 | fieldType.getWireType();
-        System.out.println("i [" + i + "] name [" + field.getName() + "] type [" + fieldType.getType() + "] order [" + this.order + "] wire [" + fieldType.getInternalFieldType() + "] ");
-        System.out.println("wireType " + fieldType.getInternalFieldType().getWireType() + ":" + fieldType.getWireType());
         return this.order << 3 | fieldType.getWireType();
-    }
-
-
-    public int makeTage() {
-        return (this.order << 3 | fieldType.getWireType());
     }
 
     public int repeatedMakeTag() {

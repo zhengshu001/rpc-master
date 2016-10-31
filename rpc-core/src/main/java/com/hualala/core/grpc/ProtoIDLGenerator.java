@@ -134,7 +134,7 @@ public class ProtoIDLGenerator {
         }
 
         if (types.contains(cls)) {
-            return null;
+            return "";
         }
 
         StringBuilder code = new StringBuilder();

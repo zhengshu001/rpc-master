@@ -19,7 +19,7 @@ import java.util.Set;
  * 生成要求格式的Grpc protobuf
  * Created by xiangbin on 2016/10/26.
  */
-public class GrpcProtoGenerator {
+public class RpcProtoGenerator {
 
     private static String protoFile = "src/main/proto";
     public static void generate(Class<?> rpcInterface, String protoName, String output) {
@@ -123,7 +123,7 @@ public class GrpcProtoGenerator {
         Set<Class<?>> types = cachedTypes;
         Set<Class<?>> enumTypes = cachedEnumTypes;
         if (types.contains(cls)) {
-            return null;
+            return "";
         }
         StringBuilder code = new StringBuilder();
         types.add(cls);
