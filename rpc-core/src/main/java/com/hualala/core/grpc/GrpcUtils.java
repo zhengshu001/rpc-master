@@ -323,7 +323,7 @@ public class GrpcUtils {
 	}
 
 	private static byte[] encodeDataBean(Object object, Class<?> clazz) {
-		List<FieldInfo> fieldInfoList = ProtoFieldUtils.getProtoField(clazz);
+		List<FieldInfo> fieldInfoList = ProtoFieldUtils.getAllProtoField(clazz);
 		List<EncodeData> encodeDataList = new ArrayList<>();
 		int size = computeSerializedSize(object, fieldInfoList, encodeDataList);
 		byte[] bytes = new byte[size];
