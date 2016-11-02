@@ -50,7 +50,7 @@ public class ResultInfo extends BaseItem {
 	}
 
 	public boolean success() {
-		return this.result.success;
+		return SUCCESS_CODE.equals(this.result.success);
 	}
 
 	public ResultInfo setCode(String code) {

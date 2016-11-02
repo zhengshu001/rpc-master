@@ -23,14 +23,46 @@ public class RpcProtoGenerator {
 
     private static String protoFile = "src/main/proto";
     public static void generate(Class<?> rpcInterface, String protoName, String output) {
-        generate(rpcInterface, protoName, false, output);
+        generate(rpcInterface, protoName, false, new Class[]{}, "", output);
+    }
+
+    public static void generateCmmons(Class[] rpcInterfaces, String protoName) {
+        if (rpcInterfaces.length == 0) {
+            return;
+        }
+        StringBuilder code = new StringBuilder();
+        code.append("syntax = \"proto3\"").append(";\n").append("\n");
+        code.append("option java_package = \"").append(rpcInterfaces[0].getPackage().getName()).append(".grpc").append("\";\n");
+
+        String dataName = rpcInterfaces[0].getPackage().getName();
+        dataName = dataName.substring(dataName.lastIndexOf(".") + 1);
+        dataName = Character.toUpperCase(dataName.charAt(0)) + dataName.substring(1);
+        code.append("option java_outer_classname = \"").append(dataName).append("Common").append("\";\n");
+        Set<Class<?>> cachedTypes = new HashSet<>();
+        Set<Class<?>> cachedEnumTypes = new HashSet<>();
+        cachedTypes.add(ResultInfo.ResultHeader.class);
+        cachedTypes.add(RequestInfo.RequestHeader.class);
+        for (Class rpcInterface : rpcInterfaces) {
+            if (Enum.class.isAssignableFrom(rpcInterface)) {
+                generateEnum(code, rpcInterface);
+            } else {
+                generate(code, rpcInterface, cachedTypes, cachedEnumTypes);
+            }
+        }
+        String codeStr = code.toString();
+        System.out.println(codeStr);
+        outputProto(codeStr, protoName, protoFile);
     }
 
     public static void generate(Class<?> rpcInterface, String protoName) {
-        generate(rpcInterface, protoName, false, protoFile);
+        generate(rpcInterface, protoName, false, new Class[]{}, "", protoFile);
     }
 
-    public static void generate(Class rpcInterface, String protoName,boolean ignoreCommon, String protoFile) {
+    public static void generate(Class rpcInterface, String protoName, boolean ignoreCommon, Class[] excludeClasses, String extracommons) {
+        generate(rpcInterface, protoName, ignoreCommon, excludeClasses, extracommons, protoFile);
+    }
+
+    public static void generate(Class rpcInterface, String protoName, boolean ignoreCommon, Class[] excludeClasses, String extracommons, String protoFile) {
         StringBuilder code = new StringBuilder();
         Method[] methods = ReflectionUtils.getAllDeclaredMethods(rpcInterface);
         if (methods.length == 0) {
@@ -43,11 +75,23 @@ public class RpcProtoGenerator {
             dataName = dataName.substring(0, dataName.indexOf("Service"));
         }
         code.append("option java_outer_classname = \"").append(dataName).append("Data").append("\";\n");
-        code.append("import \"commons.proto\"").append(";\n").append("\n");
+        code.append("import \"commons.proto\"").append(";\n");
+        if (extracommons != null && !"".equals(extracommons)) {
+            code.append("import \"").append(extracommons).append(".proto\"").append(";\n");
+        }
+        code.append("\n");
         Set<Class<?>> cachedTypes = new HashSet<>();
         cachedTypes.add(ResultInfo.ResultHeader.class);
         cachedTypes.add(RequestInfo.RequestHeader.class);
         Set<Class<?>> cachedEnumTypes = new HashSet<>();
+        for (Class excludeClass : excludeClasses) {
+            if (Enum.class.isAssignableFrom(excludeClass)) {
+                cachedEnumTypes.add(excludeClass);
+            } else {
+                cachedTypes.add(excludeClass);
+            }
+        }
+
         StringBuilder service = new StringBuilder();
         service.append("service ").append(rpcInterface.getSimpleName()).append("{").append("\n");
         Arrays.asList(methods).stream().forEach(rpcMethod -> {
