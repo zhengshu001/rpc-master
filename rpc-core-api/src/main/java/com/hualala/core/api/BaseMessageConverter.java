@@ -29,18 +29,18 @@ public class BaseMessageConverter extends AbstractHttpMessageConverter<ResultInf
 
 	@Override
 	public boolean canRead(Class<?> clazz, MediaType mediaType) {
-		return true;
+		return ResultInfo.class.isAssignableFrom(clazz);
 	}
 
 	@Override
 	public boolean canWrite(Class<?> clazz, MediaType mediaType) {
-		return true;
+		return ResultInfo.class.isAssignableFrom(clazz);
 	}
 
 
 	@Override
 	protected boolean supports(Class<?> clazz) {
-		return true;
+		return ResultInfo.class.isAssignableFrom(clazz);
 	}
 
 
