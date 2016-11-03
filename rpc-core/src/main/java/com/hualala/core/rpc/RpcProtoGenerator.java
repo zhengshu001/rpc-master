@@ -2,6 +2,7 @@ package com.hualala.core.rpc;
 
 import com.hualala.core.base.RequestInfo;
 import com.hualala.core.base.ResultInfo;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
 import java.io.BufferedWriter;
@@ -22,13 +23,42 @@ import java.util.Set;
 public class RpcProtoGenerator {
 
     private static String protoFile = "src/main/proto";
+
+    public static void generate(Class[] rpcInterfaces) {
+        Set<Class> commons = new HashSet<>();
+        Set<Class> rpcClass = new HashSet<>();
+
+        for (Class rpcInterface : rpcInterfaces) {
+            if (!rpcInterface.isInterface() || Enum.class.isAssignableFrom(rpcInterface)) {
+                commons.add(rpcInterface);
+            } else {
+                if (rpcInterface.isInterface() && rpcInterface.getAnnotation(RpcService.class) != null) {
+                    rpcClass.add(rpcInterface);
+                } else {
+                    System.out.println("rpc [" + rpcInterface + "] error");
+                }
+            }
+        }
+        Class[] commonClass = new Class[commons.size()];
+        commons.toArray(commonClass);
+        String appcommons = generateCommons(commonClass, null);
+        //生成commons
+        if (rpcInterfaces.length > 0) {
+            String packageName = rpcInterfaces[0].getName();
+            coreCommons(packageName);
+        }
+        for (Class<?> rpcInterface : rpcClass) {
+            generate(rpcInterface, null, false, commonClass, appcommons);
+        }
+    }
+
     public static void generate(Class<?> rpcInterface, String protoName, String output) {
         generate(rpcInterface, protoName, false, new Class[]{}, "", output);
     }
 
-    public static void generateCmmons(Class[] rpcInterfaces, String protoName) {
+    public static String generateCommons(Class[] rpcInterfaces, String protoName) {
         if (rpcInterfaces.length == 0) {
-            return;
+            return "";
         }
         StringBuilder code = new StringBuilder();
         code.append("syntax = \"proto3\"").append(";\n").append("\n");
@@ -36,6 +66,9 @@ public class RpcProtoGenerator {
 
         String dataName = rpcInterfaces[0].getPackage().getName();
         dataName = dataName.substring(dataName.lastIndexOf(".") + 1);
+        if (protoName == null) {
+            protoName = dataName + "commons";
+        }
         dataName = Character.toUpperCase(dataName.charAt(0)) + dataName.substring(1);
         code.append("option java_outer_classname = \"").append(dataName).append("Common").append("\";\n");
         Set<Class<?>> cachedTypes = new HashSet<>();
@@ -52,6 +85,7 @@ public class RpcProtoGenerator {
         String codeStr = code.toString();
         System.out.println(codeStr);
         outputProto(codeStr, protoName, protoFile);
+        return protoName;
     }
 
     public static void generate(Class<?> rpcInterface, String protoName) {
@@ -116,32 +150,42 @@ public class RpcProtoGenerator {
         code.append(service.toString());
         String codeStr = code.toString();
         System.out.println(codeStr);
+        if (protoName == null) {
+            protoName = rpcInterface.getSimpleName().toLowerCase();
+        }
         outputProto(codeStr, protoName, protoFile);
 
         //生成common.proto文件
         if (!ignoreCommon) {
-            StringBuilder comm = new StringBuilder();
-            comm.append("syntax = \"proto3\"").append(";\n").append("\n");
-            comm.append("option java_package = \"").append(rpcInterface.getPackage().getName()).append(".grpc").append("\";\n");
-            comm.append("option java_outer_classname = \"").append("Common").append("\";\n");
-
-            comm.append("message RequestHeader {").append("\n");
-            comm.append("   ").append("string traceID=1;").append("\n");
-            comm.append("}\n");
-
-            comm.append("message ResultHeader {").append("\n");
-            comm.append("   ").append("string traceID=1;").append("\n");
-            comm.append("   ").append("string code=2;").append("\n");
-            comm.append("   ").append("string message=3;").append("\n");
-            comm.append("   ").append("bool success=4;").append("\n");
-            comm.append("}\n");
-
-            String commStr = comm.toString();
-            System.out.println();
-            System.out.println();
-            System.out.println(commStr);
-            outputProto(commStr, "commons", protoFile);
+            coreCommons(rpcInterface.getPackage().getName());
         }
+    }
+
+    private static void coreCommons(String packageName) {
+        if (packageName == null) {
+            return;
+        }
+        StringBuilder comm = new StringBuilder();
+        comm.append("syntax = \"proto3\"").append(";\n").append("\n");
+        comm.append("option java_package = \"").append(packageName).append(".grpc").append("\";\n");
+        comm.append("option java_outer_classname = \"").append("Common").append("\";\n");
+
+        comm.append("message RequestHeader {").append("\n");
+        comm.append("   ").append("string traceID=1;").append("\n");
+        comm.append("}\n");
+
+        comm.append("message ResultHeader {").append("\n");
+        comm.append("   ").append("string traceID=1;").append("\n");
+        comm.append("   ").append("string code=2;").append("\n");
+        comm.append("   ").append("string message=3;").append("\n");
+        comm.append("   ").append("bool success=4;").append("\n");
+        comm.append("}\n");
+
+        String commStr = comm.toString();
+        System.out.println();
+        System.out.println();
+        System.out.println(commStr);
+        outputProto(commStr, "commons", protoFile);
     }
 
     private static void outputProto(String protoStr, String protoName, String protoFile) {

@@ -1,7 +1,6 @@
 package com.hualala.core.grpc.client;
 
 import com.google.protobuf.GeneratedMessage;
-import com.hualala.commons.grpc.GrpcClient;
 import com.hualala.core.Constants;
 import com.hualala.core.ErrorInfo;
 import com.hualala.core.config.message.MessageInfo;
@@ -9,31 +8,30 @@ import com.hualala.core.grpc.GrpcData;
 import com.hualala.core.grpc.GrpcUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Created by xiangbin on 2016/10/18.
  */
-public class GrpcClientExecutor {
+public class GrpcClientExecutor implements ApplicationContextAware{
 
     private Logger logger = LoggerFactory.getLogger(GrpcClientExecutor.class);
     private Logger exceptionLogger = LoggerFactory.getLogger(Constants.EXCEPTION_LOGGER);
 
-    @Autowired
     protected ApplicationContext appContext;
 
     @Autowired
     protected MessageInfo messageInfo;
 
-    public GeneratedMessage rpcService(GrpcData grpcData, GeneratedMessage message, Class<?> resClass) {
-        String traceID = (String)(GrpcUtils.getRequestHeaderFieldValue(message, GrpcUtils.GRPC_TRACEID).orElseGet(() -> UUID.randomUUID().toString()));
+    public GeneratedMessage rpcService(String traceID, GrpcData grpcData, GeneratedMessage message, Class<?> resClass) {
         try {
             GrpcClient grpcClient = appContext.getBean(grpcData.getClentName(), GrpcClient.class);
             if (grpcClient == null) {
@@ -65,5 +63,14 @@ public class GrpcClientExecutor {
             exceptionLogger.error("client remote service error", e);
             return GrpcUtils.resultToGrpcMessage(messageInfo.getResultMessage(ErrorInfo.RPC_CLIENT_SERVICE_ERROR).setTraceID(traceID), resClass);
         }
+    }
+
+    public void setMessageInfo(MessageInfo messageInfo) {
+        this.messageInfo = messageInfo;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.appContext = applicationContext;
     }
 }

@@ -11,6 +11,16 @@ public class MessageInfo {
 
     private ReloadableResourceBundleMessageSource messageSource;
 
+    private static final String[] ERROR_MESSAGE_PATH = {"classpath:core","classpath:message"};
+
+    public MessageInfo() {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasenames(ERROR_MESSAGE_PATH);
+        messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setUseCodeAsDefaultMessage(true);
+        this.messageSource = messageSource;
+    }
+
     public MessageInfo(ReloadableResourceBundleMessageSource messageSource) {
         this.messageSource = messageSource;
     }

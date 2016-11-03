@@ -1,6 +1,5 @@
 package com.hualala.core.base;
 
-import com.baidu.bjf.remoting.protobuf.annotation.Protobuf;
 import com.hualala.core.rpc.FieldType;
 import com.hualala.core.rpc.Protocol;
 
@@ -10,7 +9,6 @@ import com.hualala.core.rpc.Protocol;
 public class RequestInfo {
 
     @Protocol(fieldType = FieldType.OBJECT, order = 1, description = "请求公共字段")
-    @Protobuf(fieldType = com.baidu.bjf.remoting.protobuf.FieldType.OBJECT, order = 1, description = "请求公共字段")
     private RequestHeader header;
 
 
@@ -32,7 +30,6 @@ public class RequestInfo {
 
     public static class RequestHeader {
         @Protocol(fieldType = FieldType.STRING, order = 1)
-        @Protobuf(fieldType = com.baidu.bjf.remoting.protobuf.FieldType.OBJECT, order = 1)
         private String traceID;
     }
 }

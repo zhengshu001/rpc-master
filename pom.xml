@@ -119,22 +119,6 @@
                 <version>3.1.8</version>
             </dependency>
             <dependency>
-                <groupId>com.baidu</groupId>
-                <artifactId>jprotobuf</artifactId>
-                <version>2.0.1</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>jboss</groupId>
-                        <artifactId>javassist</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>javassist</groupId>
-                <artifactId>javassist</artifactId>
-                <version>3.8.0.GA</version>
-            </dependency>
-            <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
                 <version>5.3.0.Final</version>
@@ -162,19 +146,20 @@
 
     <repositories>
         <repository>
+            <id>gozap</id>
+            <name>gozap Repository</name>
+            <url>http://repo.gozap.com/repos/content/groups/public</url>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
-            <id>public</id>
-            <name>Public Repositories</name>
-            <url>http://repo.hualala.com/nexus/content/groups/Public/</url>
         </repository>
         <repository>
-            <id>nexus-snapshots</id>
-            <name>Nexus Snapshot Repository</name>
-            <url>http://repo.hualala.com/nexus/content/repositories/snapshots/</url>
+            <id>gozap-snapshots</id>
+            <name>gozap snapshots</name>
+            <url>http://repo.gozap.com/repos/content/repositories/snapshots</url>
         </repository>
     </repositories>
+
     <build>
         <plugins>
             <plugin>

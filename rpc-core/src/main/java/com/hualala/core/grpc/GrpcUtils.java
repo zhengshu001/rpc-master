@@ -280,11 +280,23 @@ public class GrpcUtils {
 								int length = input.readRawVarint32();
 								int limit = input.pushLimit(length);
 								while (input.getBytesUntilLimit() > 0) {
-									listObject.add(ReflectionUtils.invokeMethod(fieldInfo.getFieldType().getDecodeMethod(), input));
+									if (fieldInfo.getFieldType() == FieldType.INT) {
+										listObject.add(input.readInt32());
+									} else if (fieldInfo.getFieldType() == FieldType.LONG) {
+										listObject.add(input.readInt64());
+									} else if (fieldInfo.getFieldType() == FieldType.FLOAT) {
+										listObject.add(input.readFloat());
+									} else if (fieldInfo.getFieldType() == FieldType.DOUBLE) {
+										listObject.add(input.readDouble());
+									}
 								}
 								input.popLimit(limit);
-							} else {
-								listObject.add(ReflectionUtils.invokeMethod(fieldInfo.getFieldType().getDecodeMethod(), input));
+							} else if (fieldInfo.getFieldType() == FieldType.STRING){
+								Object value = input.readString();
+								if (conversionService.canConvert(value.getClass(), fieldInfo.getGenericType())) {
+									value = conversionService.convert(value, fieldInfo.getGenericType());
+								}
+								listObject.add(value);
 							}
 						}
 					} else if (fieldInfo.getFieldType() == FieldType.OBJECT) {
@@ -300,10 +312,23 @@ public class GrpcUtils {
 						Object value = enums[input.readEnum()];
 						ReflectionUtils.makeAccessible(fieldInfo.getField());
 						ReflectionUtils.setField(fieldInfo.getField(), object, value);
-					} else if (fieldInfo.isPrimitiveType() || fieldInfo.getFieldType() == FieldType.STRING) {
-						Object value = ReflectionUtils.invokeMethod(fieldInfo.getFieldType().getDecodeMethod(), input);
+					} else if (fieldInfo.isPrimitiveType()) {
 						ReflectionUtils.makeAccessible(fieldInfo.getField());
-						ReflectionUtils.setField(fieldInfo.getField(), object, value);
+						if (fieldInfo.getFieldType() == FieldType.INT) {
+							ReflectionUtils.setField(fieldInfo.getField(), object, input.readInt32());
+						} else if (fieldInfo.getFieldType() == FieldType.LONG) {
+							ReflectionUtils.setField(fieldInfo.getField(), object, input.readInt64());
+						} else if (fieldInfo.getFieldType() == FieldType.FLOAT) {
+							ReflectionUtils.setField(fieldInfo.getField(), object, input.readFloat());
+						} else if (fieldInfo.getFieldType() == FieldType.DOUBLE) {
+							ReflectionUtils.setField(fieldInfo.getField(), object, input.readDouble());
+						}
+					} else if (fieldInfo.getFieldType() == FieldType.STRING) {
+						Object value = input.readString();
+						if (conversionService.canConvert(value.getClass(), fieldInfo.getField().getType())) {
+							ReflectionUtils.makeAccessible(fieldInfo.getField());
+							ReflectionUtils.setField(fieldInfo.getField(), object, conversionService.convert(value, fieldInfo.getField().getType()));
+						}
 					}
 					continue;
 				}
@@ -362,7 +387,7 @@ public class GrpcUtils {
 				output.writeUInt32NoTag(encodeData.dataSize);
 				encodeCodeOutput((List<EncodeData>) encodeData.getValue(), output);
 			} else if (fieldInfo.getFieldType() == FieldType.STRING){
-				output.writeString(fieldInfo.getOrder(), (String)encodeData.getValue());
+				output.writeString(fieldInfo.getOrder(), encodeData.getValue().toString());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -389,7 +414,7 @@ public class GrpcUtils {
 				}
 			} else if (fieldInfo.getFieldType() == FieldType.STRING) {
 				for (int i = 0; i < dataSize; i++) {
-					output.writeString(fieldInfo.getOrder(), (String)valueList.get(i));
+					output.writeString(fieldInfo.getOrder(), valueList.get(i).toString());
 				}
 			} else if (fieldInfo.getFieldType() == FieldType.OBJECT) {
 				List<List<EncodeData>> dataList = (List<List<EncodeData>>)valueList;
@@ -445,7 +470,7 @@ public class GrpcUtils {
 			encodeData.setValue(encodeList);
 			encodeData.setExtra(extraList);
 		} else if (fieldInfo.getFieldType() == FieldType.STRING) {
-			size = valueList.stream().mapToInt(o -> CodedOutputStream.computeStringSize(fieldInfo.getOrder(), (String)o)).sum();
+			size = valueList.stream().mapToInt(o -> CodedOutputStream.computeStringSize(fieldInfo.getOrder(), o.toString())).sum();
 		}
 		return size;
 	}
@@ -464,7 +489,7 @@ public class GrpcUtils {
 			encodeData.setValue(subEncodeDataList);
 			encodeData.setDataSize(dataSize);
 		} else if (fieldInfo.getFieldType() == FieldType.STRING){
-			size =  CodedOutputStream.computeStringSize(fieldInfo.getOrder(), (String)value);
+			size =  CodedOutputStream.computeStringSize(fieldInfo.getOrder(), value.toString());
 		}
 		return size;
 	}

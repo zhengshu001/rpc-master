@@ -18,13 +18,14 @@
 
 	<select id="queryLst" resultType="$modelName" parameterType="$modelName">
     select
-    <include refid="querField"/>
+    <include refid="queryField"/>
     from $tableName
     </select>
 
     <sql id="queryField">
 #foreach( $name in $fieldLst )
-$name.COLUMN_NAME#if($velocityCount < $tableLen),#end
+        $name.COLUMN_NAME#if($velocityCount < $tableLen),#end
 #end
+
     </sql>
 </mapper>

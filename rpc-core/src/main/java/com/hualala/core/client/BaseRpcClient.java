@@ -3,21 +3,27 @@ package com.hualala.core.client;
 import com.hualala.core.grpc.GrpcUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 /**
  * Created by xiangbin on 2016/9/28.
  */
-public class BaseRpcClient {
+public class BaseRpcClient implements ApplicationContextAware{
 
-    @Autowired
     private ApplicationContext applicationContext;
 
     private Logger logger = LoggerFactory.getLogger(BaseRpcClient.class);
 
     public <T> T getRpcClient(Class<T> rpcInterfaceClass) {
         return applicationContext.getBean(GrpcUtils.clientInterfaceBeanName(rpcInterfaceClass), rpcInterfaceClass);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 
 //    private ResultInfo rpcService(Class<?> serviceClass, String methodName, Object reqData, Class<?> resClass) {

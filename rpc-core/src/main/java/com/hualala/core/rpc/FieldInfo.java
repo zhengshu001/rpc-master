@@ -52,8 +52,6 @@ public class FieldInfo {
         return fieldType == FieldType.INT || fieldType == FieldType.LONG || fieldType == FieldType.FLOAT || fieldType == FieldType.DOUBLE;
     }
 
-    public boolean isPrimitiveGenericType() {return this.primitiveGenericType;}
-
     public Class<?> getGenericType() {
         return this.genericType;
     }

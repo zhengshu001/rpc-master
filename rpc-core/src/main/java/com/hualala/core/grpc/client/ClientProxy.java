@@ -64,7 +64,8 @@ public class ClientProxy implements InvocationHandler {
                     requestInfo.setTraceID(UUID.randomUUID().toString());
                 }
             }
-            logger.info("traceID [" + requestInfo.getTraceID() + "] start client proxy ...");
+            String traceID = requestInfo.getTraceID();
+            logger.info("traceID [" + traceID + "] start client proxy ...");
             Set<ConstraintViolation<RequestInfo>> constraintViolations = validator.validate(requestInfo);
             if (constraintViolations.size() > 0) {
                 String validateErrorMessage = constraintViolations.stream().map(constraintViolation->
@@ -90,7 +91,7 @@ public class ClientProxy implements InvocationHandler {
             ResultInfo resultInfo = new ResultInfo(messageInfo.getMessageValue(ErrorInfo.CLIENT_PROXY_RPC_DEFAULT_ERROR));
             try {
                 GeneratedMessage requestMessage = GrpcUtils.requestToGrpcMessage(requestInfo, grpcData.getGrpcParameterType());
-                GeneratedMessage resultMessage = grpcClientExecutor.rpcService(grpcData, requestMessage, grpcData.getGrpcReturnType());
+                GeneratedMessage resultMessage = grpcClientExecutor.rpcService(traceID, grpcData, requestMessage, grpcData.getGrpcReturnType());
                 resultInfo = GrpcUtils.grpcMessageToResultBean(resultMessage, grpcData.getRpcReturnType());
                 return resultInfo;
             } catch (Throwable throwable) {
