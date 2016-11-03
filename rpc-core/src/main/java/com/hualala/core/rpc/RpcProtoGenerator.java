@@ -1,7 +1,9 @@
 package com.hualala.core.rpc;
 
 import com.hualala.core.base.RequestInfo;
+import com.hualala.core.base.RequestPageInfo;
 import com.hualala.core.base.ResultInfo;
+import com.hualala.core.base.ResultPageInfo;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
@@ -117,6 +119,8 @@ public class RpcProtoGenerator {
         Set<Class<?>> cachedTypes = new HashSet<>();
         cachedTypes.add(ResultInfo.ResultHeader.class);
         cachedTypes.add(RequestInfo.RequestHeader.class);
+        cachedTypes.add(RequestPageInfo.RequestPageHeader.class);
+        cachedTypes.add(ResultPageInfo.ResultPageHeader.class);
         Set<Class<?>> cachedEnumTypes = new HashSet<>();
         for (Class excludeClass : excludeClasses) {
             if (Enum.class.isAssignableFrom(excludeClass)) {
@@ -179,6 +183,18 @@ public class RpcProtoGenerator {
         comm.append("   ").append("string code=2;").append("\n");
         comm.append("   ").append("string message=3;").append("\n");
         comm.append("   ").append("bool success=4;").append("\n");
+        comm.append("}\n");
+
+        comm.append("message RequestPageHeader {").append("\n");
+        comm.append("   ").append("int32 pageNo=1;").append("\n");
+        comm.append("   ").append("int32 pageSize=2;").append("\n");
+        comm.append("}\n");
+
+        comm.append("message ResultPageHeader {").append("\n");
+        comm.append("   ").append("int32 pageNo=1;").append("\n");
+        comm.append("   ").append("int32 pageSize=2;").append("\n");
+        comm.append("   ").append("int32 pageTotal=3;").append("\n");
+        comm.append("   ").append("int32 totalSize=4;").append("\n");
         comm.append("}\n");
 
         String commStr = comm.toString();
