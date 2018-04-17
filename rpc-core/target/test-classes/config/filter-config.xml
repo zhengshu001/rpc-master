@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:core="http://www.hualala.com/schema/core"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.hualala.com/schema/core http://www.hualala.com/schema/core.xsd">
+
+	<core:filter uri="/base/simple.htm" service="com.hualala.pay.SimpleServiceGrpc" method="requestTest">
+		<core:request>
+			<core:data key="req" value="this a a request"/>
+			<core:data key="traceID" type="uuid"/>
+			<core:data key="bankCodeEnum" value="WEIXIN_SCAN"/>
+			<core:data key="details" type="json" value='[{"itemID":"re1","name":"name1"},{"itemID":"re2","name":"name2"}]'/>
+			<core:data key="reqDetail" type="json" value='{"itemID":"1234","name":"name1234"}'/>
+			<core:data key="listString" type="json" value='["aaa","bbb","ccc"]'/>
+			<core:data key="listInt" type="json" value='[11,22]'/>
+			<core:data key="reqData" type="date" extra="yyyyMMddHHmmss"/>
+		</core:request>
+	</core:filter>
+</beans>

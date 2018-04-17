@@ -1,0 +1,6 @@
+com/hualala/core/api/BaseMessageConverter.class
+com/hualala/core/api/config/ApiRpcConfiguration.class
+com/hualala/core/api/BaseMVCConfiguration.class
+com/hualala/core/api/BaseController.class
+com/hualala/core/api/BaseDataFilter.class
+com/hualala/core/api/config/RedisConfig.class

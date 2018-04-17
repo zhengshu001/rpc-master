@@ -1,0 +1,53 @@
+package $packageModelName;
+
+import com.hualala.commons.mybatis.item.BaseItem;
+import java.lang.String;
+import java.math.BigDecimal;
+import java.lang.Integer;
+import java.lang.Long;
+
+public class $modelClassName extends BaseItem {
+
+#foreach( $name in $fieldLst )
+#if ($name.DATA_TYPE == 'varchar')
+	private String $name.COLUMN_NAME;
+	public String get$name.METHOD_NAME () {
+	    return this.$name.COLUMN_NAME;
+	}
+	public $modelClassName set$name.METHOD_NAME (String $name.COLUMN_NAME) {
+    	this.$name.COLUMN_NAME = $name.COLUMN_NAME;
+    	return this;
+    }
+#end
+#if ($name.DATA_TYPE == 'tinyint')
+    private Integer $name.COLUMN_NAME = $name.COLUMN_DEFAULT;
+    public Integer get$name.METHOD_NAME () {
+    	return this.$name.COLUMN_NAME;
+    }
+	public $modelClassName set$name.METHOD_NAME (Integer $name.COLUMN_NAME) {
+    	this.$name.COLUMN_NAME = $name.COLUMN_NAME;
+        return this;
+    }
+#end
+#if ($name.DATA_TYPE == 'decimal')
+    private BigDecimal $name.COLUMN_NAME;
+    public BigDecimal get$name.METHOD_NAME () {
+        return this.$name.COLUMN_NAME;
+    }
+	public $modelClassName set$name.METHOD_NAME (BigDecimal $name.COLUMN_NAME) {
+    	this.$name.COLUMN_NAME = $name.COLUMN_NAME;
+        return this;
+    }
+#end
+#if ($name.DATA_TYPE == 'bigint')
+    private Long $name.COLUMN_NAME = $name.COLUMN_DEFAULT;
+    public Long get$name.METHOD_NAME () {
+       return this.$name.COLUMN_NAME;
+    }
+    public $modelClassName set$name.METHOD_NAME (Long $name.COLUMN_NAME) {
+    	this.$name.COLUMN_NAME = $name.COLUMN_NAME;
+        return this;
+    }
+#end
+#end
+}

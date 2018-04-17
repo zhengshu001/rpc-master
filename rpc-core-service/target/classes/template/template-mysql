@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="$mapperName">
+#set ($tableLen = $fieldLst.size())
+	<insert id="insert" parameterType="$modelName">
+		insert into $tableName (
+#foreach( $name in $fieldLst )
+			<if test="$name.COLUMN_NAME !=null">$name.COLUMN_NAME,</if>
+#end
+        action, actionTime, createTime
+		) values (
+#foreach( $name in $fieldLst )
+			<if test="$name.COLUMN_NAME !=null">#{$name.COLUMN_NAME},</if>
+#end
+        #{action}, #{actionTime}, #{createTime}
+		)
+	</insert>
+
+	<select id="queryLst" resultType="$modelName" parameterType="$modelName">
+    select
+    <include refid="queryField"/>
+    from $tableName
+    </select>
+
+    <sql id="queryField">
+#foreach( $name in $fieldLst )
+        $name.COLUMN_NAME#if($velocityCount < $tableLen),#end
+#end
+
+    </sql>
+</mapper>

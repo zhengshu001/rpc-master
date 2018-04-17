@@ -1,0 +1,13 @@
+package $packageMapperName;
+
+import $modelName;
+import org.apache.ibatis.annotations.Mapper;
+import java.util.List;
+import java.util.Map;
+@Mapper
+public interface $mapperClassName {
+
+	int insert($modelClassName model);
+
+	List<$modelClassName> queryLst(Map<String, Object> params);
+}

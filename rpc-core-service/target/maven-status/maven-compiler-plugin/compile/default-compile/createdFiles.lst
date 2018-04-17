@@ -1,0 +1,9 @@
+com/hualala/core/service/config/mybatis/MybatisConfiguration.class
+com/hualala/core/service/grpc/GrpcServerRunner$1.class
+com/hualala/core/service/grpc/GrpcServerRunner.class
+com/hualala/core/service/utils/MybatisSqlGenerator.class
+com/hualala/core/service/config/RedisConfig.class
+com/hualala/core/service/config/ServiceRpcConfiguration.class
+com/hualala/core/service/config/mybatis/ActionInterceptor.class
+com/hualala/core/service/TransactionExecutor.class
+com/hualala/core/service/config/datasource/DataSourceConfiguration.class
