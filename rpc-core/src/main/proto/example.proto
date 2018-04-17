@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+option java_package = "com.hualala.app.example.grpc";
+option java_outer_classname = "ExampleData";
+import "commons.proto";
+
+message HelloReqData {  
+   string paramStr=1;
+   int32 paramInt=2;
+   int64 paramLong=3;
+}
+message HelloResData {  
+   string paramStr=1;
+   int32 paramInt=2;
+   int64 paramLong=3;
+}
+message ComplexReqData {  
+   // 请求字符列子
+   string req=2;
+   // 测试list
+   repeated DetailData details=3;
+   // 测试message
+   DetailData reqDetail=4;
+   // 测试list
+   repeated string listString=5;
+   // 测试list
+   repeated int32 listInt=6;
+   BankCodeEnum bankCodeEnum=7;
+   int64 resLong=8;
+   int32 resInt=9;
+   float resFloat=10;
+   double resDouble=11;
+   repeated int64 listLong=12;
+   repeated float listFloat=13;
+   repeated double listDouble=14;
+   // 请求公共字段
+   RequestHeader header=1;
+}
+enum BankCodeEnum {  
+   WEIXIN_WAP=0;
+   WEIXIN_QRCODE=1;
+   WEIXIN_SCAN=2;
+   ALIPAY_WAP=3;
+   ALIPAY_QRCODE=4;
+}
+message DetailData {  
+   string itemID=1;
+   string name=2;
+}
+message ComplexResData {  
+   string res=2;
+   repeated DetailData retDetails=3;
+   BankCodeEnum bankCode=4;
+   DetailData detail=5;
+   repeated string listString=6;
+   repeated int32 listInt=7;
+   // 响应公共字段
+   ResultHeader result=1;
+}
+service Example{
+    rpc hello(HelloReqData) returns (HelloResData) {}
+    rpc helloComplex(ComplexReqData) returns (ComplexResData) {}
+}
